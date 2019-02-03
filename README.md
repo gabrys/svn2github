@@ -15,6 +15,10 @@ This is a Python3 script testing with Python 3.5. It shells out to the following
 * `git svn` (usually packaged separately from git!)
 * `tar`
 
+## Warning
+
+Don't use the script on untrusted repositories. The script issues commands using input from the GitHub repository and possibly this can be exploited to run arbitrary commands on your server.
+
 ## Usage
 
 There are a few ways to use the script.
