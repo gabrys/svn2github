@@ -99,7 +99,7 @@ def unpack_cache(cache_path, git_dir):
 def save_cache(cache_path, tmp_path, git_dir):
     dot_git_dir = os.path.join(git_dir, ".git")
     proc.run(["sleep", "60"], check=True, cwd=dot_git_dir)
-    proc.run(["tar", "-cf", tmp_path, "."], check=True, cwd=dot_git_dir)
+    proc.run(["tar", "-cJf", tmp_path, "."], check=True, cwd=dot_git_dir)
     shutil.copyfile(tmp_path, cache_path)
 
 
