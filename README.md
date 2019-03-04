@@ -8,7 +8,7 @@ This is a standalone script created as a response to a few people asking for an 
 
 ## Requirements
 
-This is a Python3 script testing with Python 3.5. It shells out to the following commands:
+This is a Python3 script (tested with Python 3.5). It shells out to the following commands:
 
 * `svn`
 * `git`
