@@ -103,7 +103,7 @@ def save_cache(cache_path, tmp_path, git_dir):
     shutil.copyfile(tmp_path, cache_path)
 
 
-def sync_github_mirror(github_repo, cache_dir, new_svn_url=None):
+def sync_github_mirror(github_repo, cache_dir, new_svn_url=None, new_git_dir=None):
     if cache_dir:
         os.makedirs(cache_dir, exist_ok=True)
         cache_old_path = os.path.join(cache_dir, "cache." + github_repo.replace("/", ".") + ".tar")
@@ -116,12 +116,17 @@ def sync_github_mirror(github_repo, cache_dir, new_svn_url=None):
 
     github_url = "git@github.com:" + github_repo + ".git"
 
-    with tempfile.TemporaryDirectory(prefix="svn2github-") as tmp_dir:
+    if not new_git_dir:
+        tmp_dir = os.path.join(tempfile.TemporaryDirectory(prefix="svn2github-"), "repo")
+    else:
+        tmp_dir = new_git_dir
+
+    if tmp_dir:
         git_dir = os.path.join(tmp_dir, "repo")
         if cached and not new_svn_url:
             print("Using cached Git repository from " + cache_path)
             unpack_cache(cache_path, git_dir)
-        else:
+        elif not new_git_dir or not os.path.exists(new_git_dir):
             print("Cloning " + github_url)
             git_clone(github_url, git_dir)
 
@@ -131,6 +136,7 @@ def sync_github_mirror(github_repo, cache_dir, new_svn_url=None):
             git_svn_info = GitSvnInfo(svn_url=new_svn_url, svn_revision=0, svn_uuid=None)
         else:
             git_svn_info = get_svn_info_from_git(git_dir)
+            print("svn_url = %s, svn_revison = %s" % (git_svn_info.svn_url, git_svn_info.svn_revision))
 
         print("Checking for SVN updates")
         upstream_revision = get_last_revision_from_svn(git_svn_info.svn_url)
@@ -163,6 +169,7 @@ def sync_github_mirror(github_repo, cache_dir, new_svn_url=None):
 def main():
     parser = argparse.ArgumentParser(description="Mirror SVN repositories to GitHub")
     parser.add_argument("--cache-dir", help="Directory to keep the cached data to avoid re-downloading all SVN and Git history each time. This is optional, but highly recommended")
+    parser.add_argument("--git-dir", help="git local dir without be compressed")
     subparsers = parser.add_subparsers()
 
     subparser_import = subparsers.add_parser("import", help="Import SVN repository to the GitHub repo")
@@ -174,7 +181,8 @@ def main():
     args = parser.parse_args(sys.argv[1:] or ["--help"])
 
     new_svn_url = args.svn_url if "svn_url" in args else None
-    sync_github_mirror(args.github_repo, args.cache_dir, new_svn_url=new_svn_url)
+    new_git_dir = args.git_dir if "git_dir" in args else None
+    sync_github_mirror(args.github_repo, args.cache_dir, new_svn_url=new_svn_url, new_git_dir=new_git_dir)
 
 
 
