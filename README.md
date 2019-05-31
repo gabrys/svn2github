@@ -56,6 +56,12 @@ optional arguments:
                         Directory to keep the cached data to avoid re-
                         downloading all SVN and Git history each time. This is
                         optional, but highly recommended
+  --git-dir GIT_DIR
+                        Directory to keep the cached data to avoid re-
+                        downloading all SVN and Git history each time. This is
+                        optional, but highly recommended 
+                        the difference for cache-dir is that is not compress and avoid decompress, copy all to an temporary directory and compress again.
+
 
 ====
 
@@ -79,3 +85,13 @@ optional arguments:
   -h, --help   show this help message and exit
 ```
 
+## Examples and migration from cache-dir to git-dir 
+
+### 1 - Before the existence of --git-dir option 
+./svn2github.py --cache-dir /home/sergio/rpmfusion/new/VirtualBox/svn2github/virtualbox update sergiomb2/virtualbox
+
+### 2 - Migration from --cache-dir to --git-dir option (just run one time)
+./svn2github.py --git-dir /home/sergio/rpmfusion/new/VirtualBox/svn2github/virtualbox-repo/ --cache-dir /home/sergio/rpmfusion/new/VirtualBox/svn2github/virtualbox update sergiomb2/virtualbox
+
+#### 3 - Now we may delete cache_dir and run option just with --git-dir option
+./svn2github.py --git-dir /home/sergio/rpmfusion/new/VirtualBox/svn2github/virtualbox-repo/ update sergiomb2/virtualbox
