@@ -106,7 +106,10 @@ def save_cache(cache_path, tmp_path, git_dir):
 def sync_github_mirror(github_repo, cache_dir, new_svn_url=None):
     if cache_dir:
         os.makedirs(cache_dir, exist_ok=True)
-        cache_path = os.path.join(cache_dir, "cache." + github_repo.replace("/", ".") + ".tar")
+        cache_old_path = os.path.join(cache_dir, "cache." + github_repo.replace("/", ".") + ".tar")
+        cache_path = os.path.join(cache_dir, "cache." + github_repo.replace("/", ".") + ".tar.xz")
+        if os.path.exists(cache_old_path):
+            shutil.move(cache_old_path, cache_path)
         cached = os.path.exists(cache_path)
     else:
         cached = False
@@ -154,7 +157,7 @@ def sync_github_mirror(github_repo, cache_dir, new_svn_url=None):
 
         if cache_dir:
             print("Saving Git directory to cache")
-            save_cache(cache_path, os.path.join(tmp_dir, "cache.tar"), git_dir)
+            save_cache(cache_path, os.path.join(tmp_dir, "cache.tar.xz"), git_dir)
 
 
 def main():
