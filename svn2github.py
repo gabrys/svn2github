@@ -19,14 +19,11 @@ GitSvnInfo = namedtuple('GitSvnInfo', 'svn_url svn_revision svn_uuid')
 
 
 def get_last_revision_from_svn(svn_url):
-    result = proc.run(["svn", "info", svn_url], check=True, stderr=DEVNULL, stdin=DEVNULL, stdout=PIPE)
+    result = proc.run(["svn", "info", svn_url, "--no-newline", "--show-item", "revision"], check=True, stderr=DEVNULL, stdin=DEVNULL, stdout=PIPE)
 
-    pattern = re.compile("^Revision: ([0-9]+)$".encode())
-
-    for line in result.stdout.split("\n".encode()):
-        m = pattern.match(line)
-        if m:
-            return int(m.group(1))
+    rev = int (result.stdout.decode().strip())
+    if rev:
+        return rev
 
     return Svn2GithubException("svn info {} output did not specify the current revision".format(svn_url))
 
