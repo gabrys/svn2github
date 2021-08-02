@@ -127,7 +127,9 @@ def sync_github_mirror(github_repo, cache_dir, new_svn_url=None, new_git_dir=Non
         if cached and not new_svn_url:
             print("Using cached Git repository from " + cache_path)
             unpack_cache(cache_path, git_dir)
-        elif not new_git_dir or not os.path.exists(new_git_dir):
+        elif new_git_dir and os.path.exists(new_git_dir):
+           pass
+        else:
             print("Cloning " + github_url)
             git_clone(github_url, git_dir)
 
