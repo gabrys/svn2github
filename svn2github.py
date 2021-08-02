@@ -118,7 +118,7 @@ def sync_github_mirror(github_repo, cache_dir, new_svn_url=None, new_git_dir=Non
     github_url = "git@github.com:" + github_repo + ".git"
 
     if not new_git_dir:
-        tmp_dir = os.path.join(tempfile.TemporaryDirectory(prefix="svn2github-"), "repo")
+        tmp_dir = tempfile.TemporaryDirectory(prefix="svn2github-").name
     else:
         tmp_dir = new_git_dir
 
