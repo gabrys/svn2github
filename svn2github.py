@@ -9,6 +9,8 @@ import tempfile
 import shutil
 import sys
 import argparse
+import xdg
+import inspect
 
 
 class Svn2GithubException(Exception):
@@ -157,8 +159,20 @@ def sync_github_mirror(github_repo, cache_dir, new_svn_url=None):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Mirror SVN repositories to GitHub")
-    parser.add_argument("--cache-dir", help="Directory to keep the cached data to avoid re-downloading all SVN and Git history each time. This is optional, but highly recommended")
+    parser = argparse.ArgumentParser(
+        description="Mirror SVN repositories to GitHub",
+        formatter_class=argparse.RawTextHelpFormatter
+    )
+    default_cache_dir = xdg.xdg_cache_home() / "svn2github"
+    parser.add_argument(
+        "--cache-dir",
+        help=inspect.cleandoc(f"""
+            Directory to keep the cached data,
+            to avoid re-downloading all SVN and Git history each time.
+            Default: {default_cache_dir}
+        """),
+        default=default_cache_dir
+    )
     subparsers = parser.add_subparsers()
 
     subparser_import = subparsers.add_parser("import", help="Import SVN repository to the GitHub repo")
