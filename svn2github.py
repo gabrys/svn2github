@@ -41,7 +41,7 @@ def is_repo_empty(git_dir):
 
 
 def get_svn_info_from_git(git_dir):
-    result = run_git_cmd(["log", "-1", "HEAD", "--pretty=%b"], git_dir=git_dir)
+    result = run_git_cmd(["log", "-1", "HEAD", "--pretty=%B"], git_dir=git_dir)
 
     pattern = re.compile("^git-svn-id: (.*)@([0-9]+) ([0-9a-f-]{36})$".encode())
 
@@ -50,7 +50,7 @@ def get_svn_info_from_git(git_dir):
         if m:
              return GitSvnInfo(svn_url=m.group(1), svn_revision=int(m.group(2)), svn_uuid=m.group(3))
 
-    return Svn2GithubException("git log -1 HEAD --pretty=%b output did not specify the current revision")
+    return Svn2GithubException("git log -1 HEAD --pretty=%B output did not specify the current revision")
 
 
 def git_svn_init(git_svn_info, git_dir):
